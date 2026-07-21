@@ -33,9 +33,37 @@ def run_agent(name:str, system:str, user:str) -> str:
     print(f"Finished {name} in {time.time() - start:.1f}s")
     return result
 
-# Agent 1: Create a short outline
 
+# Agent 1: Create a short outline
 def planner_agent(topic:str) -> str:
     return run_agent("Planner Agent", "Break this topic into 3 short study sections", topic)
 
+
+# Agent 2: Turn the outline into notes
+def teacher_agent(topic:str, outline:str) -> str:
+    return run_agent("Teacher Agent", "Write short beginner-friendly notes using the outline. Keep it concise.",
+        f"Topic: {topic}\n\nOutline:\n{outline}")
+
+
+# Agent 3: Write review questions from the notes
+def quiz_agent(topic:str, notes:str) -> str:
+    return run_agent(
+        "quiz_agent",
+        "Write 3 short review questions based on the notes.",
+        f"Topic: {topic}\n\nNotes:\n{notes}",
+    )
+
+
+def build_study_guide(topic:str) -> str:
+    # Run all 3 agents in sequence and combine their outputs
+    outline = planner_agent(topic)
+    notes = teacher_agent(topic, outline)
+    quiz = quiz_agent(topic, notes)
+
+    return(
+        f"# Study Guide: {topic}\n\n"
+        f"## Outline\n{outline}\n\n"
+        f"## Notes\n{notes}\n\n"
+        f"## Review Questions\n{quiz}\n"
+    )
 
